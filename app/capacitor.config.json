@@ -1,0 +1,23 @@
+{
+  "appId": "com.alzahrani.ruqyah",
+  "appName": "سور الرقية",
+  "webDir": "www",
+  "backgroundColor": "#f3f4ee",
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": true,
+    "backgroundColor": "#f3f4ee"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "launchAutoHide": true,
+      "backgroundColor": "#f3f4ee",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DEFAULT",
+      "overlaysWebView": true
+    }
+  }
+}

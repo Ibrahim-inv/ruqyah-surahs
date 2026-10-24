@@ -569,12 +569,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 RUQYAH_DESC = "صفحة قراءة لسور الرقية المتداولة بترتيبها، كل سورة تُفتح بالضغط عليها"
 TASBIH_DESC = "مسبحة أذكار: اضغط للعدّ واسحب للانتقال إلى الذكر التالي"
 
+LOCAL_FONTS = '<link rel="stylesheet" href="fonts/fonts.css">'
+
 # نسخة غيت هب: روابط نسبية
 ruqyah_page, n_ayahs = build_ruqyah("tasbih.html")
 tasbih_page = build_tasbih("index.html")
 open(os.path.join(REPO, "index.html"), "w", encoding="utf-8").write(wrap_standalone(ruqyah_page, RUQYAH_DESC))
 open(os.path.join(REPO, "tasbih.html"), "w", encoding="utf-8").write(wrap_standalone(tasbih_page, TASBIH_DESC))
 print("repo pages written; ayahs on ruqyah page:", n_ayahs)
+
+# نسخة التطبيق: الخطوط محلية ليعمل بلا إنترنت
+APP_WWW = os.path.join(REPO, "app", "www")
+if os.path.isdir(os.path.join(REPO, "app")):
+    import shutil
+    os.makedirs(APP_WWW, exist_ok=True)
+    for name, page, desc in (("index.html", ruqyah_page, RUQYAH_DESC), ("tasbih.html", tasbih_page, TASBIH_DESC)):
+        open(os.path.join(APP_WWW, name), "w", encoding="utf-8").write(
+            wrap_standalone(page.replace(FONTS, LOCAL_FONTS), desc))
+    if os.path.isdir(os.path.join(APP_WWW, "fonts")):
+        shutil.rmtree(os.path.join(APP_WWW, "fonts"))
+    shutil.copytree(os.path.join(REPO, "fonts"), os.path.join(APP_WWW, "fonts"))
+    print("app www written with local fonts")
 
 # نسخة الأداة: روابط إلى الموقع العام
 if ART:
