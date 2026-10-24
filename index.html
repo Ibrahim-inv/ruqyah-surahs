@@ -10,16 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap">
 <style>
-/* Layout: one narrow reading column; each surah is a mushaf-style header band that opens into the text. */
+/* صفحة قراءة: عمود واحد، كل سورة شريط عنوان يُفتح على نصها. */
 :root {
-  --bg: #f3f4ee;
-  --card: #fbfcf8;
-  --fg: #1e2924;
-  --muted: #66716a;
-  --line: #d6dbd1;
-  --accent: #0f5e4a;
-  --accent-soft: #e2efe9;
-  --gold: #a5833a;
+  --bg: #f3f4ee; --card: #fbfcf8; --fg: #1e2924; --muted: #66716a; --line: #d6dbd1;
+  --accent: #0f5e4a; --accent-soft: #e2efe9; --gold: #a5833a;
   --font-quran: "Amiri Quran", "Scheherazade New", "KFGQPC Uthman Taha Naskh", "Noto Naskh Arabic", serif;
   --font-ui: "Noto Naskh Arabic", "Geeza Pro", "Tahoma", serif;
   --qsize: 1.7rem;
@@ -35,6 +29,7 @@
   --accent: #7fd3b4; --accent-soft: #1f2f29; --gold: #d2b36c; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+
 body {
   margin: 0; background: var(--bg); color: var(--fg);
   font-family: var(--font-ui); font-size: 1rem; line-height: 1.7;
@@ -44,26 +39,19 @@ body {
 }
 .page { max-width: 46rem; margin: 0 auto; min-width: 0; }
 header.top { text-align: center; padding-block: 2rem 1rem; }
-header.top h1 {
-  font-family: var(--font-quran); font-weight: 400; font-size: 2.4rem; margin: 0; color: var(--accent);
-  text-wrap: balance; line-height: 1.4;
-}
+header.top h1 { font-family: var(--font-quran); font-weight: 400; font-size: 2.4rem; margin: 0; color: var(--accent); text-wrap: balance; line-height: 1.4; }
 header.top p { margin: .4rem 0 0; color: var(--muted); font-size: .95rem; }
+.navlink { display: inline-block; margin-top: .8rem; font-size: .95rem; color: var(--accent); text-decoration: none; border: 1px solid var(--line); background: var(--card); border-radius: 2rem; padding: .3rem 1rem; }
+.navlink:hover { border-color: var(--accent); }
 .toolbar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem .75rem;
-  background: var(--bg); border-bottom: 1px solid var(--line); padding-block: .6rem;
-  margin-bottom: 1rem;
+  background: var(--bg); border-bottom: 1px solid var(--line); padding-block: .6rem; margin-bottom: 1rem;
 }
 .toolbar .group { display: flex; align-items: center; gap: .4rem; }
-.toolbar button {
-  font: inherit; font-size: .9rem; color: var(--fg); background: var(--card);
-  border: 1px solid var(--line); border-radius: .5rem; padding: .3rem .7rem; cursor: pointer;
-}
+.toolbar button { font: inherit; font-size: .9rem; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: .5rem; padding: .3rem .7rem; cursor: pointer; }
 .toolbar button:hover { border-color: var(--accent); }
-.toolbar button:focus-visible, .head:focus-visible, .next:focus-visible, .read input:focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px;
-}
+.toolbar button:focus-visible, .head:focus-visible, .next:focus-visible, .read input:focus-visible, .navlink:focus-visible, .start button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .progress { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
 .list { display: flex; flex-direction: column; gap: .7rem; }
 .surah { min-width: 0; }
@@ -76,48 +64,23 @@ header.top p { margin: .4rem 0 0; color: var(--muted); font-size: .95rem; }
 }
 .head:hover { border-color: var(--accent); }
 .head[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent); }
-.idx {
-  display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%;
-  border: 1px solid var(--gold); color: var(--gold); font-size: .85rem; font-variant-numeric: tabular-nums;
-}
+.idx { display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); font-size: .85rem; font-variant-numeric: tabular-nums; }
 .surah.read .idx { background: var(--gold); color: var(--card); }
 .name { font-family: var(--font-quran); font-size: 1.45rem; line-height: 1.3; min-width: 0; }
 .meta { color: var(--muted); font-size: .85rem; white-space: nowrap; }
-.chev {
-  width: .55rem; height: .55rem; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
-  transform: rotate(45deg); transition: transform .2s; margin-left: .2rem;
-}
+.chev { width: .55rem; height: .55rem; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s; margin-left: .2rem; }
 .head[aria-expanded="true"] .chev { transform: rotate(-135deg); }
-.body {
-  background: var(--card); border: 1px solid var(--line); border-top: 0;
-  border-radius: 0 0 .6rem .6rem; margin-top: -.35rem; padding: 1.4rem 1.25rem 1rem;
-}
+.body { background: var(--card); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 .6rem .6rem; margin-top: -.35rem; padding: 1.4rem 1.25rem 1rem; }
 .note { display: block; color: var(--muted); font-size: .85rem; margin-bottom: .8rem; }
-.basmala {
-  font-family: var(--font-quran); font-size: calc(var(--qsize) * 1.05); text-align: center; margin: 0 0 1rem;
-  color: var(--accent); line-height: 2;
-}
-.ayat {
-  font-family: var(--font-quran); font-size: var(--qsize); line-height: 2.25; text-align: justify;
-  margin: 0; min-width: 0; overflow-wrap: anywhere;
-}
-.n {
-  display: inline-grid; place-items: center; min-width: 1.35em; height: 1.35em; padding: 0 .2em;
-  border: 1px solid var(--gold); border-radius: 50%; color: var(--gold);
-  font-family: var(--font-ui); font-size: .5em; line-height: 1; vertical-align: .35em; margin: 0 .15em;
-  font-variant-numeric: tabular-nums;
-}
-.foot {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem;
-  border-top: 1px dashed var(--line); margin-top: 1.4rem; padding-top: .9rem;
-}
+.plabel { color: var(--accent); font-size: .9rem; margin: 1.2rem 0 .3rem; }
+.plabel:first-of-type { margin-top: 0; }
+.basmala { font-family: var(--font-quran); font-size: calc(var(--qsize) * 1.05); text-align: center; margin: 0 0 1rem; color: var(--accent); line-height: 2; }
+.ayat { font-family: var(--font-quran); font-size: var(--qsize); line-height: 2.25; text-align: justify; margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.n { display: inline-grid; place-items: center; min-width: 1.35em; height: 1.35em; padding: 0 .2em; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); font-family: var(--font-ui); font-size: .5em; line-height: 1; vertical-align: .35em; margin: 0 .15em; font-variant-numeric: tabular-nums; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem; border-top: 1px dashed var(--line); margin-top: 1.4rem; padding-top: .9rem; }
 .read { display: inline-flex; align-items: center; gap: .4rem; cursor: pointer; color: var(--muted); }
 .read input { accent-color: var(--accent); width: 1.1rem; height: 1.1rem; }
-.next {
-  font: inherit; font-size: .95rem; color: var(--card); background: var(--accent);
-  border: 0; border-radius: .5rem; padding: .45rem .9rem; cursor: pointer;
-}
-.done { color: var(--muted); font-size: .9rem; }
+.next { font: inherit; font-size: .95rem; color: var(--card); background: var(--accent); border: 0; border-radius: .5rem; padding: .45rem .9rem; cursor: pointer; }
 .hisn { margin-top: 2.2rem; min-width: 0; }
 .hisn h2 { font-family: var(--font-quran); color: var(--accent); text-align: center; font-weight: 400; font-size: 2rem; margin: 0 0 .2rem; line-height: 1.4; }
 .hisn .lead { text-align: center; color: var(--muted); font-size: .9rem; margin: 0 0 1rem; }
@@ -126,11 +89,10 @@ header.top p { margin: .4rem 0 0; color: var(--muted); font-size: .95rem; }
 .dhikr { background: var(--card); border: 1px solid var(--line); border-radius: .6rem; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .45rem; min-width: 0; }
 .dhikr .t { font-family: var(--font-quran); font-size: calc(var(--qsize) * .82); line-height: 2; margin: 0; overflow-wrap: anywhere; }
 .dhikr .rep { color: var(--gold); font-size: .85rem; }
-.dhikr .src { color: var(--muted); font-size: .85rem; margin: 0; }
+.dhikr .src, .hisn .src { color: var(--muted); font-size: .85rem; margin: 0; }
 .tahrij { margin-top: .2rem; margin-bottom: 1.8rem; }
 .tahrij .start { display: flex; justify-content: center; margin-top: 1rem; }
 .start button { font: inherit; font-size: 1rem; color: var(--card); background: var(--accent); border: 0; border-radius: .5rem; padding: .55rem 1.3rem; cursor: pointer; }
-.start button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; margin-top: 2.5rem; line-height: 1.8; }
 @media (max-width: 480px) {
   .head { grid-template-columns: auto 1fr auto; }
@@ -138,9 +100,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
   .chev { grid-column: 3; grid-row: 1 / span 2; }
   .name { font-size: 1.3rem; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .chev, .head { transition: none; }
-}
+@media (prefers-reduced-motion: reduce) { .chev, .head { transition: none; } }
 </style>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head>
@@ -149,7 +109,8 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <div class="page" dir="rtl" lang="ar">
   <header class="top">
     <h1>سور الرقية</h1>
-    <p>التحريج، ثم السور والمقاطع المتداولة في رقية التعطيل بترتيبها المشهور، ثم التحصين. اضغط على السورة لتُفتح للقراءة.</p>
+    <p>التحريج، ثم السور والمقاطع المتداولة في رقية التعطيل بترتيبها المشهور مع آيات السحر، ثم التحصين. اضغط على السورة لتُفتح للقراءة.</p>
+    <a class="navlink" href="tasbih.html">المسبحة: عدّاد الأذكار</a>
   </header>
 
   <div class="toolbar">
@@ -167,7 +128,6 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
   <section class="hisn tahrij" id="tahrij">
     <h2>التحريج</h2>
     <p class="lead">يُقرأ مرة واحدة قبل البدء بالسور.</p>
-
     <div class="cards">
       <div class="dhikr">
         <p class="t">دَخَلْتُ عَلَى جَسَدِي بِلَا إِلَٰهَ إِلَّا اللَّهُ، أُنَاشِدُ كُلَّ مَنْ دَخَلَ جَسَدِي مِنَ الشَّيَاطِينِ وَمِنَ السِّحْرِ وَالْحَسَدِ وَالْعَيْنِ تَرْكَ جَسَدِي طَاعَةً لِلَّهِ وَلِرَسُولِهِ، لَا تُؤْذُونِي وَلَا أُوذِيكُمْ</p>
@@ -179,7 +139,6 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
       </div>
     </div>
     <p class="src" style="margin-top:.8rem">الصيغتان من اجتهاد الرقاة لا من المأثور. ومخاطبة الجن وردت عن ابن تيمية مع المصروع الحاضر، وقيّدها ابن باز بترك المبالغة، وقصرها إسلام ويب على الأمر بالمعروف والنهي عن المنكر.</p>
-
     <div class="start"><button type="button" id="start-ruqyah">ابدأ الرقية من الفاتحة</button></div>
   </section>
 
@@ -257,6 +216,25 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
     <p class="ayat"><span class="a">ءَامَنَ ٱلرَّسُولُ بِمَآ أُنزِلَ إِلَيْهِ مِن رَّبِّهِۦ وَٱلْمُؤْمِنُونَ ۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَٰٓئِكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَيْنَ أَحَدٍۢ مِّن رُّسُلِهِۦ ۚ وَقَالُوا۟ سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ ٱلْمَصِيرُ</span> <span class="n" aria-label="آية ٢٨٥">٢٨٥</span> <span class="a">لَا يُكَلِّفُ ٱللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا ٱكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَآ إِن نَّسِينَآ أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَآ إِصْرًۭا كَمَا حَمَلْتَهُۥ عَلَى ٱلَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِۦ ۖ وَٱعْفُ عَنَّا وَٱغْفِرْ لَنَا وَٱرْحَمْنَآ ۚ أَنتَ مَوْلَىٰنَا فَٱنصُرْنَا عَلَى ٱلْقَوْمِ ٱلْكَٰفِرِينَ</span> <span class="n" aria-label="آية ٢٨٦">٢٨٦</span></p>
     <div class="foot">
       <label class="read"><input type="checkbox" id="r-baqara2" data-read="baqara2"> قرأتها</label>
+      <button type="button" class="next" data-next="sihr">التالي: آيات السحر</button>
+    </div>
+  </div>
+</section>
+<section class="surah" id="sihr">
+  <h2 class="head-wrap">
+    <button type="button" class="head" id="h-sihr" aria-expanded="false" aria-controls="b-sihr">
+      <span class="idx">٥</span>
+      <span class="name">آيات السحر</span>
+      <span class="meta">الأعراف ويونس وطه</span>
+      <span class="chev" aria-hidden="true"></span>
+    </button>
+  </h2>
+  <div class="body" id="b-sihr" hidden>
+    <span class="note">الآيات التي يوصي بها ابن باز وغيره لإبطال السحر، وليست في نسخ رقية التعطيل المتداولة.</span>
+    
+    <p class="plabel">سورة الأعراف، الآيات ١١٧ إلى ١٢٢</p><p class="ayat"><span class="a">۞ وَأَوْحَيْنَآ إِلَىٰ مُوسَىٰٓ أَنْ أَلْقِ عَصَاكَ ۖ فَإِذَا هِىَ تَلْقَفُ مَا يَأْفِكُونَ</span> <span class="n" aria-label="آية ١١٧">١١٧</span> <span class="a">فَوَقَعَ ٱلْحَقُّ وَبَطَلَ مَا كَانُوا۟ يَعْمَلُونَ</span> <span class="n" aria-label="آية ١١٨">١١٨</span> <span class="a">فَغُلِبُوا۟ هُنَالِكَ وَٱنقَلَبُوا۟ صَٰغِرِينَ</span> <span class="n" aria-label="آية ١١٩">١١٩</span> <span class="a">وَأُلْقِىَ ٱلسَّحَرَةُ سَٰجِدِينَ</span> <span class="n" aria-label="آية ١٢٠">١٢٠</span> <span class="a">قَالُوٓا۟ ءَامَنَّا بِرَبِّ ٱلْعَٰلَمِينَ</span> <span class="n" aria-label="آية ١٢١">١٢١</span> <span class="a">رَبِّ مُوسَىٰ وَهَٰرُونَ</span> <span class="n" aria-label="آية ١٢٢">١٢٢</span></p><p class="plabel">سورة يونس، الآيات ٧٩ إلى ٨٢</p><p class="ayat"><span class="a">وَقَالَ فِرْعَوْنُ ٱئْتُونِى بِكُلِّ سَٰحِرٍ عَلِيمٍۢ</span> <span class="n" aria-label="آية ٧٩">٧٩</span> <span class="a">فَلَمَّا جَآءَ ٱلسَّحَرَةُ قَالَ لَهُم مُّوسَىٰٓ أَلْقُوا۟ مَآ أَنتُم مُّلْقُونَ</span> <span class="n" aria-label="آية ٨٠">٨٠</span> <span class="a">فَلَمَّآ أَلْقَوْا۟ قَالَ مُوسَىٰ مَا جِئْتُم بِهِ ٱلسِّحْرُ ۖ إِنَّ ٱللَّهَ سَيُبْطِلُهُۥٓ ۖ إِنَّ ٱللَّهَ لَا يُصْلِحُ عَمَلَ ٱلْمُفْسِدِينَ</span> <span class="n" aria-label="آية ٨١">٨١</span> <span class="a">وَيُحِقُّ ٱللَّهُ ٱلْحَقَّ بِكَلِمَٰتِهِۦ وَلَوْ كَرِهَ ٱلْمُجْرِمُونَ</span> <span class="n" aria-label="آية ٨٢">٨٢</span></p><p class="plabel">سورة طه، الآيات ٦٥ إلى ٦٩</p><p class="ayat"><span class="a">قَالُوا۟ يَٰمُوسَىٰٓ إِمَّآ أَن تُلْقِىَ وَإِمَّآ أَن نَّكُونَ أَوَّلَ مَنْ أَلْقَىٰ</span> <span class="n" aria-label="آية ٦٥">٦٥</span> <span class="a">قَالَ بَلْ أَلْقُوا۟ ۖ فَإِذَا حِبَالُهُمْ وَعِصِيُّهُمْ يُخَيَّلُ إِلَيْهِ مِن سِحْرِهِمْ أَنَّهَا تَسْعَىٰ</span> <span class="n" aria-label="آية ٦٦">٦٦</span> <span class="a">فَأَوْجَسَ فِى نَفْسِهِۦ خِيفَةًۭ مُّوسَىٰ</span> <span class="n" aria-label="آية ٦٧">٦٧</span> <span class="a">قُلْنَا لَا تَخَفْ إِنَّكَ أَنتَ ٱلْأَعْلَىٰ</span> <span class="n" aria-label="آية ٦٨">٦٨</span> <span class="a">وَأَلْقِ مَا فِى يَمِينِكَ تَلْقَفْ مَا صَنَعُوٓا۟ ۖ إِنَّمَا صَنَعُوا۟ كَيْدُ سَٰحِرٍۢ ۖ وَلَا يُفْلِحُ ٱلسَّاحِرُ حَيْثُ أَتَىٰ</span> <span class="n" aria-label="آية ٦٩">٦٩</span></p>
+    <div class="foot">
+      <label class="read"><input type="checkbox" id="r-sihr" data-read="sihr"> قرأتها</label>
       <button type="button" class="next" data-next="anfal">التالي: سورة الأنفال</button>
     </div>
   </div>
@@ -264,7 +242,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="anfal">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-anfal" aria-expanded="false" aria-controls="b-anfal">
-      <span class="idx">٥</span>
+      <span class="idx">٦</span>
       <span class="name">سورة الأنفال</span>
       <span class="meta">٧٥ آية</span>
       <span class="chev" aria-hidden="true"></span>
@@ -283,7 +261,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="saffat">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-saffat" aria-expanded="false" aria-controls="b-saffat">
-      <span class="idx">٦</span>
+      <span class="idx">٧</span>
       <span class="name">سورة الصافات</span>
       <span class="meta">١٨٢ آية</span>
       <span class="chev" aria-hidden="true"></span>
@@ -302,7 +280,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="haqqa">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-haqqa" aria-expanded="false" aria-controls="b-haqqa">
-      <span class="idx">٧</span>
+      <span class="idx">٨</span>
       <span class="name">سورة الحاقة</span>
       <span class="meta">٥٢ آية</span>
       <span class="chev" aria-hidden="true"></span>
@@ -321,7 +299,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="zalzala">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-zalzala" aria-expanded="false" aria-controls="b-zalzala">
-      <span class="idx">٨</span>
+      <span class="idx">٩</span>
       <span class="name">سورة الزلزلة</span>
       <span class="meta">٨ آيات</span>
       <span class="chev" aria-hidden="true"></span>
@@ -340,7 +318,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="qaria">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-qaria" aria-expanded="false" aria-controls="b-qaria">
-      <span class="idx">٩</span>
+      <span class="idx">١٠</span>
       <span class="name">سورة القارعة</span>
       <span class="meta">١١ آية</span>
       <span class="chev" aria-hidden="true"></span>
@@ -359,7 +337,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="dukhan">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-dukhan" aria-expanded="false" aria-controls="b-dukhan">
-      <span class="idx">١٠</span>
+      <span class="idx">١١</span>
       <span class="name">سورة الدخان</span>
       <span class="meta">٥٩ آية</span>
       <span class="chev" aria-hidden="true"></span>
@@ -378,7 +356,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="kafirun">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-kafirun" aria-expanded="false" aria-controls="b-kafirun">
-      <span class="idx">١١</span>
+      <span class="idx">١٢</span>
       <span class="name">سورة الكافرون</span>
       <span class="meta">٦ آيات</span>
       <span class="chev" aria-hidden="true"></span>
@@ -397,7 +375,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="ikhlas">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-ikhlas" aria-expanded="false" aria-controls="b-ikhlas">
-      <span class="idx">١٢</span>
+      <span class="idx">١٣</span>
       <span class="name">سورة الإخلاص</span>
       <span class="meta">٤ آيات</span>
       <span class="chev" aria-hidden="true"></span>
@@ -416,7 +394,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="falaq">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-falaq" aria-expanded="false" aria-controls="b-falaq">
-      <span class="idx">١٣</span>
+      <span class="idx">١٤</span>
       <span class="name">سورة الفلق</span>
       <span class="meta">٥ آيات</span>
       <span class="chev" aria-hidden="true"></span>
@@ -435,7 +413,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <section class="surah" id="nas">
   <h2 class="head-wrap">
     <button type="button" class="head" id="h-nas" aria-expanded="false" aria-controls="b-nas">
-      <span class="idx">١٤</span>
+      <span class="idx">١٥</span>
       <span class="name">سورة الناس</span>
       <span class="meta">٦ آيات</span>
       <span class="chev" aria-hidden="true"></span>
@@ -456,7 +434,6 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
   <section class="hisn" id="hisn">
     <h2>التحصين</h2>
     <p class="lead">يُقرأ بعد الانتهاء من السور، أو في الصباح والمساء.</p>
-
     <h3>صيغة التحصين في الرقية المتداولة</h3>
     <div class="cards">
       <div class="dhikr">
@@ -464,7 +441,6 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
         <p class="src">صيغة الرقية المتداولة. معناها صحيح، ولم أجد لها أصلًا مأثورًا عن النبي صلى الله عليه وسلم.</p>
       </div>
     </div>
-
     <h3>أذكار التحصين الثابتة في السنة</h3>
     <div class="cards">
       <div class="dhikr">
@@ -498,27 +474,22 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
 <script>
 (function () {
   var root = document.documentElement;
-  root.setAttribute('dir', 'rtl');
-  root.setAttribute('lang', 'ar');
-
-  var TOTAL = 14;
+  root.setAttribute('dir', 'rtl'); root.setAttribute('lang', 'ar');
+  var TOTAL = 15;
   var AR = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
   function ar(n) { return String(n).replace(/\d/g, function (d) { return AR[+d]; }); }
   function load(k, fb) { try { var v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch (e) { return fb; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
-  // font size
   var size = load('ruqyah.size', 1.7);
   function applySize() { root.style.setProperty('--qsize', size + 'rem'); }
   applySize();
   document.getElementById('font-up').addEventListener('click', function () { size = Math.min(3, +(size + 0.15).toFixed(2)); applySize(); save('ruqyah.size', size); });
   document.getElementById('font-down').addEventListener('click', function () { size = Math.max(1.1, +(size - 0.15).toFixed(2)); applySize(); save('ruqyah.size', size); });
 
-  // open / close
   function setOpen(sec, open) {
-    var btn = sec.querySelector('.head'), body = sec.querySelector('.body');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    body.hidden = !open;
+    sec.querySelector('.head').setAttribute('aria-expanded', open ? 'true' : 'false');
+    sec.querySelector('.body').hidden = !open;
   }
   var sections = Array.prototype.slice.call(document.querySelectorAll('.surah'));
   sections.forEach(function (sec) {
@@ -527,8 +498,7 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
       setOpen(sec, !open);
       if (!open) sec.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
-    var nxt = sec.querySelector('.next');
-    if (nxt) nxt.addEventListener('click', function () {
+    sec.querySelector('.next').addEventListener('click', function () {
       var target = document.getElementById(this.getAttribute('data-next'));
       setOpen(sec, false);
       if (target.classList.contains('surah')) setOpen(target, true);
@@ -537,8 +507,10 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
   });
   document.getElementById('open-all').addEventListener('click', function () { sections.forEach(function (s) { setOpen(s, true); }); });
   document.getElementById('close-all').addEventListener('click', function () { sections.forEach(function (s) { setOpen(s, false); }); });
+  document.getElementById('start-ruqyah').addEventListener('click', function () {
+    setOpen(sections[0], true); sections[0].scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
 
-  // read marks
   var read = load('ruqyah.read', {});
   function updateProgress() {
     var n = sections.filter(function (s) { return read[s.id]; }).length;
@@ -546,22 +518,14 @@ footer.bottom { color: var(--muted); font-size: .85rem; text-align: center; marg
   }
   sections.forEach(function (sec) {
     var box = sec.querySelector('input[data-read]');
-    box.checked = !!read[sec.id];
-    sec.classList.toggle('read', box.checked);
+    box.checked = !!read[sec.id]; sec.classList.toggle('read', box.checked);
     box.addEventListener('change', function () {
       read[sec.id] = this.checked; if (!this.checked) delete read[sec.id];
-      sec.classList.toggle('read', this.checked);
-      save('ruqyah.read', read); updateProgress();
+      sec.classList.toggle('read', this.checked); save('ruqyah.read', read); updateProgress();
     });
   });
   updateProgress();
 
-  document.getElementById('start-ruqyah').addEventListener('click', function () {
-    setOpen(sections[0], true);
-    sections[0].scrollIntoView({ block: 'start', behavior: 'smooth' });
-  });
-
-  // deep link: #anfal opens that surah
   var h = (location.hash || '').replace('#', '');
   var target = h && document.getElementById(h);
   if (target && target.classList.contains('surah')) { setOpen(target, true); target.scrollIntoView(); }

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="مسبحة أذكار: اضغط للعدّ واسحب للانتقال إلى الذكر التالي">
+<meta name="color-scheme" content="light dark">
+<title>المسبحة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap">
+<style>
+/* شاشة واحدة: الذكر في الوسط وحلقة المئة حوله، اللمس يعدّ والسحب ينقل. */
+:root {
+  --bg: #f3f4ee; --card: #fbfcf8; --fg: #1e2924; --muted: #66716a; --line: #d6dbd1;
+  --accent: #0f5e4a; --accent-soft: #e2efe9; --gold: #a5833a;
+  --font-quran: "Amiri Quran", "Scheherazade New", "KFGQPC Uthman Taha Naskh", "Noto Naskh Arabic", serif;
+  --font-ui: "Noto Naskh Arabic", "Geeza Pro", "Tahoma", serif;
+  --qsize: 1.7rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121816; --card: #1a211e; --fg: #e7eae3; --muted: #9aa59d; --line: #2b3531;
+    --accent: #7fd3b4; --accent-soft: #1f2f29; --gold: #d2b36c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121816; --card: #1a211e; --fg: #e7eae3; --muted: #9aa59d; --line: #2b3531;
+  --accent: #7fd3b4; --accent-soft: #1f2f29; --gold: #d2b36c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-ui); line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow: hidden;
+}
+.app { height: 100%; max-width: 40rem; margin: 0 auto; display: flex; flex-direction: column; min-width: 0; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-block: .7rem .3rem; }
+.bar h1 { font-family: var(--font-quran); font-weight: 400; font-size: 1.7rem; margin: 0; color: var(--accent); }
+.bar a, .bar button { font: inherit; font-size: .9rem; color: var(--accent); background: var(--card); border: 1px solid var(--line); border-radius: 2rem; padding: .25rem .9rem; text-decoration: none; cursor: pointer; }
+.bar a:hover, .bar button:hover { border-color: var(--accent); }
+.niyya { background: var(--accent-soft); border: 1px solid var(--line); border-radius: .7rem; padding: .8rem 1rem; margin-top: .4rem; font-size: .95rem; }
+.niyya p { margin: 0; }
+.niyya .k { color: var(--accent); font-weight: 500; }
+.niyya .m { color: var(--muted); font-size: .85rem; margin-top: .3rem; }
+.surface {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  text-align: center; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; padding-block: .5rem;
+}
+.dots { display: flex; gap: .45rem; }
+.dot { width: .55rem; height: .55rem; border-radius: 50%; border: 1px solid var(--gold); }
+.dot.on { background: var(--gold); }
+.label { color: var(--muted); font-size: .9rem; margin: 0; }
+.text { font-family: var(--font-quran); font-size: clamp(1.4rem, 5.5vw, 2.1rem); line-height: 1.9; margin: 0; max-width: 32rem; text-wrap: balance; }
+.ring { position: relative; width: min(58vw, 15rem); aspect-ratio: 1; max-width: 100%; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring .track { fill: none; stroke: var(--line); stroke-width: 6; }
+.ring .bar2 { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .15s; }
+.ring.hundred .bar2 { stroke: var(--gold); }
+.count { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(2.6rem, 12vw, 4.2rem); font-variant-numeric: tabular-nums; line-height: 1; }
+.count.pop { animation: pop .18s ease-out; }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.sub { color: var(--muted); font-size: .9rem; margin: 0; font-variant-numeric: tabular-nums; }
+.hint { color: var(--muted); font-size: .8rem; margin: 0; }
+.controls { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding-block: .5rem 1rem; }
+.controls button { font: inherit; font-size: .95rem; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: .6rem; padding: .5rem 1rem; cursor: pointer; min-width: 5.5rem; }
+.controls button:hover { border-color: var(--accent); }
+.controls button.warn { color: var(--card); background: #a84b3c; border-color: #a84b3c; }
+.controls .total { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .count.pop { animation: none; } .ring .bar2 { transition: none; } }
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+
+<div class="app" dir="rtl" lang="ar">
+  <header class="bar">
+    <a href="index.html">سور الرقية</a>
+    <h1>المسبحة</h1>
+    <button type="button" id="niyya-btn" aria-expanded="true" aria-controls="niyya">النية</button>
+  </header>
+  <div class="niyya" id="niyya">
+    <p><span class="k">استحضر النية:</span> الصدقة، وبنية الفرج وتيسير الأمر، وأن يُسخِّر الله لك من هو أقوى منك.</p>
+    <p class="m">بالمئات، ولو استطعت بالآلاف.</p>
+  </div>
+
+  <main class="surface" id="surface" aria-live="polite">
+    <div class="dots" id="dots"><span class="dot" data-i="0"></span><span class="dot" data-i="1"></span><span class="dot" data-i="2"></span><span class="dot" data-i="3"></span><span class="dot" data-i="4"></span></div>
+    <p class="label" id="label"></p>
+    <p class="text" id="text"></p>
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="track" cx="60" cy="60" r="54"></circle>
+        <circle class="bar2" id="bar" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29"></circle>
+      </svg>
+      <div class="count" id="count">٠</div>
+    </div>
+    <p class="sub" id="sub"></p>
+    <p class="hint">اضغط في أي مكان للعدّ، واسحب للانتقال إلى الذكر التالي</p>
+  </main>
+
+  <footer class="controls">
+    <button type="button" id="prev">السابق</button>
+    <span class="total" id="total"></span>
+    <button type="button" id="reset">تصفير</button>
+    <button type="button" id="next">التالي</button>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.setAttribute('dir', 'rtl'); root.setAttribute('lang', 'ar');
+  var ADHKAR = [{"id": "istighfar", "label": "الاستغفار", "text": "أَسْتَغْفِرُ اللَّهَ"}, {"id": "hawqala", "label": "الحوقلة", "text": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ"}, {"id": "hayy", "label": "دعاء الاستغاثة", "text": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ وَلَا أَدْنَى مِنْ ذَلِكَ"}, {"id": "malik", "label": "من الفاتحة", "text": "يَا مَالِكَ يَوْمِ الدِّينِ، إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ"}, {"id": "salat", "label": "الصلاة على النبي", "text": "اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ"}];
+  var AR = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  var C = 339.29;
+  function ar(n) { return String(n).replace(/\d/g, function (d) { return AR[+d]; }); }
+  function load(k, fb) { try { var v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch (e) { return fb; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var counts = load('tasbih.counts', {});
+  var cur = Math.min(ADHKAR.length - 1, Math.max(0, load('tasbih.current', 0)));
+  var niyyaOpen = load('tasbih.niyya', true);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var elCount = $('count'), elBar = $('bar'), elRing = $('ring'), elSub = $('sub'), elTotal = $('total');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+
+  function render(anim) {
+    var d = ADHKAR[cur], n = counts[d.id] || 0;
+    $('label').textContent = d.label;
+    $('text').textContent = d.text;
+    elCount.textContent = ar(n);
+    var inHundred = n === 0 ? 0 : (n % 100 === 0 ? 100 : n % 100);
+    elBar.setAttribute('stroke-dashoffset', (C * (1 - inHundred / 100)).toFixed(2));
+    elRing.classList.toggle('hundred', n > 0 && n % 100 === 0);
+    elSub.textContent = 'المئات المكتملة: ' + ar(Math.floor(n / 100)) + (n >= 1000 ? ' · تجاوزت الألف' : '');
+    var all = 0; ADHKAR.forEach(function (x) { all += counts[x.id] || 0; });
+    elTotal.textContent = 'المجموع ' + ar(all);
+    dots.forEach(function (el, i) { el.classList.toggle('on', i === cur); });
+    if (anim) { elCount.classList.remove('pop'); void elCount.offsetWidth; elCount.classList.add('pop'); }
+  }
+
+  function count() {
+    var d = ADHKAR[cur];
+    counts[d.id] = (counts[d.id] || 0) + 1;
+    save('tasbih.counts', counts);
+    render(true);
+    try { if (navigator.vibrate) navigator.vibrate(counts[d.id] % 100 === 0 ? [40, 60, 40] : 12); } catch (e) {}
+  }
+  function go(delta) {
+    cur = (cur + delta + ADHKAR.length) % ADHKAR.length;
+    save('tasbih.current', cur);
+    render(false);
+  }
+
+  // اللمس يعدّ، السحب ينقل
+  var sx = 0, sy = 0, st = 0, moved = false, active = false;
+  var surf = $('surface');
+  surf.addEventListener('pointerdown', function (e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    active = true; moved = false; sx = e.clientX; sy = e.clientY; st = Date.now();
+  });
+  surf.addEventListener('pointermove', function (e) {
+    if (!active) return;
+    if (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy) > 10) moved = true;
+  });
+  function finish(e) {
+    if (!active) return; active = false;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    var ax = Math.abs(dx), ay = Math.abs(dy);
+    if (ax > 45 || ay > 45) {
+      // في الاتجاه العربي: السحب لليسار أو للأعلى = التالي
+      if (ax >= ay) go(dx < 0 ? 1 : -1); else go(dy < 0 ? 1 : -1);
+    } else if (!moved) {
+      count();
+    }
+  }
+  surf.addEventListener('pointerup', finish);
+  surf.addEventListener('pointercancel', function () { active = false; });
+  surf.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  // لوحة المفاتيح
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+    if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); count(); }
+    else if (e.code === 'ArrowLeft') go(1);
+    else if (e.code === 'ArrowRight') go(-1);
+  });
+
+  $('next').addEventListener('click', function () { go(1); });
+  $('prev').addEventListener('click', function () { go(-1); });
+
+  // تصفير على خطوتين
+  var resetBtn = $('reset'), armed = null;
+  resetBtn.addEventListener('click', function () {
+    if (armed) {
+      clearTimeout(armed); armed = null;
+      delete counts[ADHKAR[cur].id]; save('tasbih.counts', counts);
+      resetBtn.textContent = 'تصفير'; resetBtn.classList.remove('warn'); render(false);
+    } else {
+      resetBtn.textContent = 'تأكيد التصفير'; resetBtn.classList.add('warn');
+      armed = setTimeout(function () { armed = null; resetBtn.textContent = 'تصفير'; resetBtn.classList.remove('warn'); }, 3000);
+    }
+  });
+
+  // النية
+  var nb = $('niyya-btn'), nbox = $('niyya');
+  function applyNiyya() { nbox.hidden = !niyyaOpen; nb.setAttribute('aria-expanded', niyyaOpen ? 'true' : 'false'); }
+  applyNiyya();
+  nb.addEventListener('click', function () { niyyaOpen = !niyyaOpen; save('tasbih.niyya', niyyaOpen); applyNiyya(); });
+
+  render(false);
+})();
+</script>
+
+</body>
+</html>
